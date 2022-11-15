@@ -1,0 +1,93 @@
+<head>
+    <!-- Bootstrap include -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+
+    <!-- fontawsome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css"/>
+
+    <!-- jquery 버전 유의 -->
+    <!-- slim/jquery, 3.1.0 윗 버전에서 ajax가 작동하지 않는 오류 확인 -->
+    <!-- Bootstrap의 CDN을 copy&paste 하되 Line 8의 버전만 3.1.0으로 수정하세요 -->
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+</head>
+
+
+<body  style="background-color: gainsboro">
+    <div class="container"  style="text-align:center">
+        <i class="fas fa-id-card-alt" style="font-size: 150px; color: gainsboro"></i>
+        <h1>종친회 재산 관리 <br /></h1>
+    </div>
+        <hr/>
+        <div class="row justify-content-md-center" style="text-align:center">
+            <div class="col-lg">
+                <div id="add-alert"></div>
+                <form action="/addOwner" method="post">
+                    <h3>새로운 소유주를 추가합니다</h3><br/>
+                    <input type="text" id="add-email" name="owername" placeholder="소유주 이름"
+                    /><br/> <br/>
+                    <input type="text"  id="add-stake"name="stake"   placeholder="소유주의 지분을 입력하세요."
+                    />
+                    <br/><br/>
+                    <button class="btn btn-secondary btn-lg" id="new-btn">추가하기</button>
+                </form>
+            </div>
+        </div> 
+</body>
+
+<script>
+    $("#btn-read").click(() => {
+        const name = $("#asset_id").val()
+        console.log(`${name} in #btn-read`)
+        $.get("/readAsset",{name},(data) => { // name: 보내는 인자, data : 함수로부터 return값
+            console.log(data)
+            $("#d_result").append(`<br><p> ${data.name}</p>`)
+        });
+    });
+    
+
+</script>
+
+<style>
+    .radio{
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+      
+        border: 2px solid #999;
+        transition: 0.2s all linear;
+        margin-right: 5px;
+      
+        position: relative;
+        top: 4px;
+    }
+    input{
+        width:300px;
+        border-top:none;
+        border-left:none;
+        border-right:none;
+        border-bottom:1px solid grey;
+    }   
+    button{
+        border-color: rgba(67, 73, 75, 0.514);
+        background-color: transparent;
+        background-image: linear-gradient(300deg,#808080 0%,#808080 100%);
+        border-radius:25px 25px 25px 25px;
+        background-color: transparent;
+        background-image: linear-gradient(300deg,#808080 0%,#808080 100%); 
+    }
+    h4{
+        text-align: center;
+        color: rgba(85,85,85,0.8); 
+    }
+    hr{
+        width : 100%;
+        height : 10px;
+        background-color : rgba(81,81,80,0.5);
+        border : 0;
+    }
+</style>
+

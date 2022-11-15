@@ -1,17 +1,10 @@
 <head>
     <!-- Bootstrap include -->
     <link
-        rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous"
-    />
+        rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"    />
 
     <!-- fontawsome -->
-    <link
-        rel="stylesheet"
-        href="https://use.fontawesome.com/releases/v5.9.0/css/all.css"
-    />
+    <link rel="stylesheet"        href="https://use.fontawesome.com/releases/v5.9.0/css/all.css" />
 
     <!-- jquery 버전 유의 -->
     <!-- slim/jquery, 3.1.0 윗 버전에서 ajax가 작동하지 않는 오류 확인 -->
@@ -19,111 +12,39 @@
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
 </head>
 
-<body>
-    <div class="container">
-        <i
-            class="fas fa-id-card-alt"
-            style="font-size: 150px; color: gainsboro"
-        ></i>
-        <h1>종친회 재산 관리 <br />프로토타입</h1>
-        <hr />
-        <div class="row justify-content-md-center">
-            <div class="col-lg">
-                <div id="new-alert"></div>
-                <form atcion="/readAsset" method="post">
-                    <h3>조회하고 싶은 재산정보의 ID를 입력해주세요.</h3>
-                    <input type="text" id="new-email"name="assetid"placeholder="재산 ID를 입력해주세요."/>
-                    <br />
-                    <button class="btn btn-primary" id="new-btn">조회하기</button>
-                </form>
-            </div>
+<body style="background-color: gainsboro" style="text-align:center"> 
+    <div class="container" style="text-align:center"> 
+        <i class="fas fa-id-card-alt" style="font-size: 150px; color: gainsboro"></i>
+        <h1>종친회 재산 관리 </h1><br/>
+    </div>
+    <hr/>
+    <div class="row justify-content-md-center" style="text-align:center">
+        <div class="col-lg form-label">
+            <h3>조회하고 싶은 재산정보의 ID를 입력해주세요.</h3>
+            <br/>
+            <input type="text" id="asset_id"name="asset_id"placeholder="재산 ID를 입력해주세요."/>
+            <br/><br/>
+            <button class="btn btn-secondary btn-lg" id="btn-read">조회하기</button>
         </div>
-
-       
-
-                <!-- 테이블 안에 row를 하나씩 붙이는 곳 -->
-                <table class="table">
-                    <tbody id="table"></tbody>
-                </table>
-            </div>
-        </div>
+    </div>
+    <div class="col-lg">
+        <div id="d_result"></div>
     </div>
 </body>
 
 <script>
-    $("#new-btn").click(() => {
-        // new-email이라는 id값을 가지고 있는 input의 value를 가지고 옴
-        const value = $("#new-email").val();
-        const url = "/mate";
+    $("#btn-read").click(() => {
+        const name = $("#asset_id").val()
+        console.log(`${name} in #btn-read`)
+        $.get("/readAsset",{name},(data) => { // name: args, data : return 
+            console.log(data)
+            $("#d_result").empty()
+            $("#d_result").append(`<br><p> 재산명 : ${data.msg.Name} </p>`)
+            $("#d_result").append(`<p> 재산유형 : ${data.msg.Asset_type} </p>`)
+            $("#d_result").append(`<p> 재산종류 : ${data.msg.Category} </p>`)
+            $("#d_result").append(`<p> 소유주 : ${data.msg.Owner[0].OwnerName} </p>`)
+            $("#d_result").append(`<p> 지분 : ${data.msg.Owner[0].Stake} </p>`)
 
-        // email이라는 파라메터에 위의 value를 넣음
-        $.post(url, { email: value }, (data, status) => {
-            // http 상태 코드가 200(success)이라면
-            if (status == "success") {
-                // 성공했다는 alert창을 띄움
-                $("#new-alert").append(
-                    "<div id='success' class='alert alert-success'>추가를 성공했습니다!</div>"
-                );
-                $("#new-alert").fadeOut(4000);
-            }
-        });
-    });
-    $("#add-btn").click(() => {
-        // new-email이라는 id값을 가지고 있는 input의 value를 가지고 옴
-        const e = $("#add-email").val();
-        const p = $("#add-project").val();
-        const s = $("#add-score").val();
-
-        const url = "/score";
-
-        // email이라는 파라메터에 위의 value를 넣음
-        $.post(url, { email: e, project: p, score: s }, (data, status) => {
-            // http 상태 코드가 200(success)이라면
-            if (status == "success") {
-                // 성공했다는 alert창을 띄움
-                $("#add-alert").append(
-                    "<div id='success' class='alert alert-success'>점수추가를 성공했습니다!</div>"
-                );
-                $("#add-alert").fadeOut(4000);
-            }
-        });
-    });
-
-    $("#find-btn").click(() => {
-        const value = $("#find-email").val();
-        const url = "/mate/" + value;
-        $.post(url, { email: value }, (data) => {
-            // 조회했을 때 값이 null이 아니면 (일치하는 값이 존재한다면)
-            if (status != null) {
-                $("#find-alert").append(
-                    "<div id='success' class='alert alert-success'>조회를 성공했습니다!</div>"
-                );
-                $("#find-alert").fadeOut(2000);
-
-                // stringify는 json객체를 string으로, parse는 string을 json객체로 변환 시켜줌
-                const test = JSON.stringify(data);
-                const parsedData = JSON.parse(test);
-                $("#table").empty();
-
-                $("#table").append(
-                    "<tr><th scope='row'>average</th><td>" +
-                        parsedData.average +
-                        "</td></tr>"
-                );
-                // rates라는 key의 value로 Json array가 있으므로 반복문을 통해 한 줄씩 테이블에 넣어줌
-                for (var i = 0; i < parsedData.rates.length; i++) {
-                    $("#table").append(
-                        "<tr><th scope='row'>project title</th><td>" +
-                            parsedData.rates[i].projecttitle +
-                            "</td></tr>"
-                    );
-                    $("#table").append(
-                        "<tr><th scope='row'>score</th><td>" +
-                            parsedData.rates[i].score +
-                            "</td></tr>"
-                    );
-                }
-            }
         });
     });
 </script>
@@ -139,48 +60,23 @@
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-    }
-
-    button {
-        margin: 20px 10px;
-    }
- 
-
-    .col-6 {
-        padding: 20px 10px;
     } 
-    input:checked {
-    border: 6px solid black;
+    button{
+        border-color: rgba(67, 73, 75, 0.514);
+        background-color: transparent;
+        background-image: linear-gradient(300deg,#808080 0%,#808080 100%);
+        border-radius:25px 25px 25px 25px;
+        background-color: transparent;
+        background-image: linear-gradient(300deg,#808080 0%,#808080 100%); 
+        border-color: #97948c;
     }
-    .radio{
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-      
-        border-radius: 50%;
-        width: 16px;
-        height: 16px;
-      
-        border: 2px solid #999;
-        transition: 0.2s all linear;
-        margin-right: 5px;
-      
-        position: relative;
-        top: 4px;
-    }
-    button,
-    legend {
-    color: white;
-    background-color: black;
-    padding: 5px 10px;
-    
-    border: 2px solid #999;
-    transition: 0.2s all linear;
-    margin-right: 5px;
-        
-    border-radius: 50%; 
-    }
-    
+    input{
+        width:300px;
+        border-top:none;
+        border-left:none;
+        border-right:none;
+        border-bottom:1px solid grey;
+    }   
     button:hover,
     button:focus {
     color: #999;
@@ -190,5 +86,11 @@
     background-color: white;
     color: black;
     outline: 1px solid black;
+    }
+    hr{
+        width : 100%;
+        height : 10px;
+        background-color : rgba(81,81,80,0.5);
+        border : 0;
     }
 </style>

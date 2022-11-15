@@ -17,8 +17,13 @@ type Assetstruct struct {
 	Asset_ID int `json:ASSET_ID`
 	Asset_type int `json:ASSET_TYPE`
 	Category string `json:CATEGORY`
-	Owner []string `json:OWNER`
+	Owner []AssetOwner `json:OWNER`
 	//share struct
+}
+
+type AssetOwner struct {
+	OwnerName string `json:owner`
+	Stake int `json:int`
 }
 //type sharestruct struct{}
 func (s *managingJongchin) AssetExists(ctx contractapi.TransactionContextInterface, Asset_ID int)(bool,error){
@@ -36,7 +41,7 @@ func (s *managingJongchin) AssetExists(ctx contractapi.TransactionContextInterfa
 
 // }
 
-func (s *managingJongchin) AddAsset(ctx contractapi.TransactionContextInterface, name string, asset_type int, category string, owner []string) error {  // 피어에서 호출, BN
+func (s *managingJongchin) AddAsset(ctx contractapi.TransactionContextInterface, name string, asset_type int, category string, owners string, share int) error {  // 피어에서 호출, BN
 	
 	fmt.Println("addstart")
 	asset_ID+=1
@@ -47,14 +52,14 @@ func (s *managingJongchin) AddAsset(ctx contractapi.TransactionContextInterface,
 	if exists !=false {
 		return fmt.Errorf(`AssetID (%d) is already exists`,asset_ID)
 	} 
+	var owner = AssetOwner{OwnerName:owners ,Stake:share}
+	asset := Assetstruct {}
+	asset.Name = name 
+	asset.Asset_ID = asset_ID
+	asset.Asset_type=asset_type
+	asset.Category = category
+	asset.Owner= append(asset.Owner,owner)
 
-	asset := Assetstruct {
-		Name:name,
-		Asset_ID : asset_ID,
-		Asset_type:asset_type,
-		Category : category, 
-		Owner : owner,
-	}
 	assetID := strconv.Itoa(asset_ID)
 	assetbytes, err := json.Marshal(asset)
 	if err != nil {
@@ -97,18 +102,19 @@ func (s *managingJongchin) DeleteAsset(ctx contractapi.TransactionContextInterfa
 	asset_ID :=strconv.Itoa(Asset_ID)
 	return ctx.GetStub().DelState(asset_ID)
 }
-func (s *managingJongchin) AddOwner(ctx contractapi.TransactionContextInterface, Asset_ID int, Owner string) error{ 
+func (s *managingJongchin) AddOwner(ctx contractapi.TransactionContextInterface, Asset_ID int, Owner string, share int) error{ 
 	 
 	asset, err := s.ReadAsset(ctx,Asset_ID)
 	if err!=nil {
 		return err
 	}
 	for _, owner := range asset.Owner {
-		if owner == Owner{  
+		if owner.OwnerName == Owner{  
 			return fmt.Errorf(`Owner already exists.`)
 		}
 	}
-	asset.Owner = append(asset.Owner, Owner)
+	var assetOwner = AssetOwner{OwnerName : Owner, Stake:share}
+	asset.Owner = append(asset.Owner, assetOwner)
 
 	assetbytes, err := json.Marshal(asset)
 	if err != nil {
@@ -122,22 +128,6 @@ func (s *managingJongchin) AddOwner(ctx contractapi.TransactionContextInterface,
 // 	for _, owner := range asset.Owner {
 // 		if owner != Owner{  
 	
-// }
-// func (s *SecureYacht) SellYacht(ctx contractapi.TransactionContextInterface, name string, fromuser string, touser string ) error {
-// 	yacht, err := s.ReadYacht(ctx,name)
-// 	if err!=nil {
-// 		return err
-// 	}
-// 	if yacht.Owner !=fromuser{  // 요트의 onwer와 fromuser가 다르면 
-// 		return fmt.Errorf(`can not sell the yacht `)
-// 	}
-// 	// 요트 정보의 owner 를 touser ->원장에 다시 덮어씌우기 
-// 	yacht.Owner = touser 
-// 	yachtbytes, err := json.Marshal(yacht)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return ctx.GetStub().PutState(name,yachtbytes)
 // }
 
 func main() {

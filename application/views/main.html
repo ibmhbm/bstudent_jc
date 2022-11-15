@@ -1,0 +1,24 @@
+<head>
+    <!-- Bootstrap include -->
+    <link        rel="stylesheet"        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"        crossorigin="anonymous"    />
+    <!-- fontawsome -->
+    <link        rel="stylesheet"        href="https://use.fontawesome.com/releases/v5.9.0/css/all.css"
+    />
+
+    <!-- jquery 버전 유의 -->
+    <!-- slim/jquery, 3.1.0 윗 버전에서 ajax가 작동하지 않는 오류 확인 -->
+    <!-- Bootstrap의 CDN을 copy&paste 하되 Line 8의 버전만 3.1.0으로 수정하세요 -->
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+</head>
+<body  style="background-color: gainsboro">
+    <div class="container">
+        <i class="fas fa-id-card-alt" style="font-size: 150px; color: gainsboro"></i>
+        <h3>원하는 서비스를 선택하세요.</h3>
+        <section class ="choice-service">
+            <button class="btn btn-primary" id="btn-read">재산조회</button>
+            <button class="btn btn-primary" id="btn-add">재산입력</button>
+            <button class="btn btn-primary" id="btn-del">재산삭제</button>
+            <button class="btn btn-primary" id="btn-owner">소유주추가</button>
+        </section>
+    </div>
+</body>
